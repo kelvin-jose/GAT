@@ -85,3 +85,9 @@ for epoch in range(train_config['num_epochs']):
         accuracy = torch.sum(pred == labels2idx[val_indices]) / len(pred)
         print(f'train loss: {train_loss:.3f} | valid loss: {valid_loss:.3f} | valid accuracy: {accuracy:.3f}')
         valid_losses.append(valid_loss.detach().numpy())
+
+plt.figure(figsize=(15, 5))
+train_losses_np = np.array(train_losses).reshape(200, 5)
+train_losses_np = train_losses_np.mean(1)
+plt.plot(train_losses_np)
+plt.legend(['train']);
