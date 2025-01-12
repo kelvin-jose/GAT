@@ -13,6 +13,10 @@ class GATLayer(torch.nn.Module):
         self.drop1 = torch.nn.Dropout(0.6)
         self.drop2 = torch.nn.Dropout(0.6)
 
-
     def forward(self):
         pass
+
+    def init_params(self):
+        torch.nn.init.xavier_uniform_(self.W.weight, gain=1.414)
+        torch.nn.init.xavier_uniform_(self.source_scorer)
+        torch.nn.init.xavier_uniform_(self.target_scorer)
