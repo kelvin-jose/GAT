@@ -13,13 +13,18 @@ class GATLayer(torch.nn.Module):
         self.drop1 = torch.nn.Dropout(0.6)
         self.drop2 = torch.nn.Dropout(0.6)
 
-    def forward(self):
+    def forward(self, x, edge_index):
         x = self.drop1(x)
         x = self.W(x).view(self.num_heads, -1, self.fout) # [num_heads, nodes, fout]
         source_scores = (x * self.source_scorer).sum(-1)
         target_scores = (x * self.target_scorer).sum(-1)
         select_feats, select_scores = self.select_source_target_feats(source_scores, target_scores, x)
         scores = self.l_relu(select_scores.sum(axis=-1))
+        weighted_feats, att_scores = self.softmax_sum(scores, select_feats, x.shape, edge_index)
+        if self.concat:
+            weighted_feats = weighted_feats.permute(1, 0, 2).reshape(x.shape[1], -1)
+        else:
+            weighted_feats = weighted_feats.mean(0)
 
 
     def init_params(self):
