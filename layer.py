@@ -25,6 +25,7 @@ class GATLayer(torch.nn.Module):
             weighted_feats = weighted_feats.permute(1, 0, 2).reshape(x.shape[1], -1)
         else:
             weighted_feats = weighted_feats.mean(0)
+        return weighted_feats
 
 
     def init_params(self):
