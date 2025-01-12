@@ -54,4 +54,34 @@ train_config = {
     'weight_decay': 0.0005
 }
 
+class GAT(torch.nn.Module):
+    def __init__(self):
+        super().__init__()        
+        self.gat_model = torch.nn.Sequential(
+              *[GATLayer(fin = train_config['fin'][layer_idx],
+                        fout = train_config['fout'][layer_idx],
+                        num_heads = train_config['num_heads'][layer_idx],
+                        concat = train_config['concat'][layer_idx])  
+               for layer_idx in range(train_config['num_layers'])])
+        
+model = GAT()
+optimizer = torch.optim.Adam(params = model.parameters(), lr = train_config['lr'], weight_decay = train_config['weight_decay'])
+loss_fn = torch.nn.CrossEntropyLoss()
+X = torch.Tensor(node_features)
+train_losses = []
+valid_losses = []
 
+for epoch in range(train_config['num_epochs']):
+    optimizer.zero_grad()
+    scores = model.gat_model(X)
+    train_loss = loss_fn(scores[train_indices], labels2idx[train_indices])
+    train_loss.backward()
+    optimizer.step()
+    train_losses.append(train_loss.detach().numpy())
+    
+    if epoch % 100 == 0:
+        valid_loss = loss_fn(scores[val_indices], labels2idx[val_indices])
+        pred = torch.argmax(scores[val_indices], -1) 
+        accuracy = torch.sum(pred == labels2idx[val_indices]) / len(pred)
+        print(f'train loss: {train_loss:.3f} | valid loss: {valid_loss:.3f} | valid accuracy: {accuracy:.3f}')
+        valid_losses.append(valid_loss.detach().numpy())
