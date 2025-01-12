@@ -30,3 +30,14 @@ def random_stratified_train_indices(items, sample_size=20):
             sample_indices = item_indices
         indices.extend(sample_indices)
     return indices
+
+train_indices = random_stratified_train_indices(node_labels)
+other_indices = np.setdiff1d(range(len(node_labels)), train_indices)
+val_indices = np.random.choice(other_indices, 500, replace=False)
+other_indices = np.setdiff1d(range(len(other_indices)), val_indices)
+test_indices = np.random.choice(other_indices, 1000, replace=False)
+
+print('train data size: ', len(train_indices))
+print('valid data size: ', len(val_indices))
+print('test data size: ', len(test_indices))
+
