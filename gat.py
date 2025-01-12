@@ -4,6 +4,8 @@ import numpy as np
 from sklearn import preprocessing 
 from matplotlib import pyplot as plt
 
+from layer import GATLayer
+
 CORA_TARGET_LOCATION = '../datasets/cora_preprocessed'
 EDGE_INFO = 'cora_edge_index.npy'
 FEATURES = 'cora_features.npy'
@@ -40,4 +42,16 @@ test_indices = np.random.choice(other_indices, 1000, replace=False)
 print('train data size: ', len(train_indices))
 print('valid data size: ', len(val_indices))
 print('test data size: ', len(test_indices))
+
+train_config = {
+    'num_layers': 2,
+    'fin': [1433, 64],
+    'num_heads': [8, 1],
+    'fout': [8, 7],
+    'concat': [True, False],
+    'num_epochs': 1000,
+    'lr': 0.005,
+    'weight_decay': 0.0005
+}
+
 
