@@ -73,7 +73,7 @@ valid_losses = []
 
 for epoch in range(train_config['num_epochs']):
     optimizer.zero_grad()
-    scores = model.gat_model(X)
+    scores = model.gat_model(X, edge_index)
     train_loss = loss_fn(scores[train_indices], labels2idx[train_indices])
     train_loss.backward()
     optimizer.step()
