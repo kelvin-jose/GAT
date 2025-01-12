@@ -18,6 +18,7 @@ class GATLayer(torch.nn.Module):
         x = self.W(x).view(self.num_heads, -1, self.fout) # [num_heads, nodes, fout]
         source_scores = (x * self.source_scorer).sum(-1)
         target_scores = (x * self.target_scorer).sum(-1)
+        select_feats, select_scores = self.select_source_target_feats(source_scores, target_scores, x)
 
     def init_params(self):
         torch.nn.init.xavier_uniform_(self.W.weight, gain=1.414)
